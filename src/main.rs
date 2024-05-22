@@ -1,3 +1,6 @@
+use xnor::tensor::Tensor;
+
 fn main() {
-    println!("Hello, world!");
+    let x = Tensor {};
+    println!("{:?}", x);
 }

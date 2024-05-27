@@ -1,7 +1,7 @@
 use core::fmt::Display;
 use core::ops::Index;
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub struct Shape<const N: usize>(pub [usize; N]);
 
 impl<const N: usize> Shape<N> {
@@ -50,9 +50,8 @@ impl<const N: usize> Display for Shape<N> {
 
 #[cfg(test)]
 mod tests {
-    use alloc::string::ToString;
-
     use super::*;
+    use alloc::string::ToString;
 
     #[test]
     fn ndim() {

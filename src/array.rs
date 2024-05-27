@@ -19,7 +19,6 @@ macro_rules! nested_array {
     ($type:ty; $size:expr) => { [$type; $size] };
     ($type:ty; $size:expr, $($rest:expr),+) => { [nested_array!($type; $($rest),+); $size] };
 }
-
 macro_rules! generate_data_fn {
     () => {
         fn data(&self) -> Vec<T> { alloc::vec![*self; 1] }
@@ -32,7 +31,7 @@ macro_rules! generate_data_fn {
     };
 }
 macro_rules! impl_convertible_to_array {
-    ($ndim:literal, {$($sizes:expr),*}, {$($generics:tt)*}) => {
+    ($ndim:literal, {$($sizes:tt),*}, {$($generics:tt)*}) => {
         impl<T: Copy, $($generics)*> ConvertibleToArray<T, $ndim> for nested_array!(T; $($sizes),*) {
             fn shape(&self) -> Shape<$ndim> {
                 Shape([$($sizes),*])

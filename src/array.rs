@@ -3,6 +3,11 @@ use alloc::sync::Arc;
 use alloc::vec::Vec;
 use num_traits::Num;
 
+// TODO: Make the impl_convertible_to_array macro more powerful with
+// procedural macros, see
+// https://www.freecodecamp.org/news/procedural-macros-in-rust/#types-of-macros-in-rust
+
+#[allow(dead_code)] // TEMPORARY
 #[derive(Debug)]
 pub struct Array<T, const N: usize> {
     shape: Shape<N>,

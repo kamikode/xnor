@@ -3,7 +3,6 @@ extern crate alloc;
 
 pub mod old_array;
 pub mod old_shape;
-pub mod shape;
 
 pub mod prelude {
     /*

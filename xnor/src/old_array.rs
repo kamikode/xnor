@@ -1,4 +1,4 @@
-use super::shape::Shape;
+use super::old_shape::Shape;
 use alloc::sync::Arc;
 use alloc::vec::Vec;
 use num_traits::Num;

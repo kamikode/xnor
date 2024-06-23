@@ -3,7 +3,7 @@ use crate::shapes::{Rank0, Rank1, Rank2, Rank3, Rank4, Rank5, Rank6, Rank7, Rank
 use alloc::sync::Arc;
 use alloc::vec::Vec;
 use num_traits::Num;
-use xnor_macros::generate_tensor_from_implementations;
+use xnor_macros::generate_tensor_from_array;
 
 #[allow(dead_code)] // TEMPORARY.
 #[derive(Debug)]
@@ -65,7 +65,7 @@ pub type U64Tensor<S> = Tensor<u64, S>;
 pub type U128Tensor<S> = Tensor<u128, S>;
 
 // Generates "From" trait implementations for converting arrays to tensors.
-generate_tensor_from_implementations!(9);
+generate_tensor_from_array!(9);
 
 #[cfg(test)]
 mod tests {

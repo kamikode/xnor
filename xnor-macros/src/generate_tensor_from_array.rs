@@ -4,7 +4,7 @@ use syn::{parse_macro_input, LitInt};
 
 const DIM: &str = "D";
 
-pub fn generate_tensor_from_implementations_impl(item: TokenStream) -> TokenStream {
+pub fn generate_tensor_from_array_impl(item: TokenStream) -> TokenStream {
     // Extract maximum desired rank from macro input.
     let input = parse_macro_input!(item as LitInt);
     let max_ndim = input.base10_parse::<usize>().unwrap();

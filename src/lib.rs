@@ -3,6 +3,7 @@ extern crate alloc;
 
 pub mod shapes;
 pub mod tensor;
+pub mod tensor_ops;
 
 pub mod prelude {
     pub use crate::shape;

@@ -42,15 +42,12 @@ pub fn generate_code(max_ndim: usize) -> syn::Result<String> {
             const_dims.extend(quote! {
                 const #dim_name: usize,
             });
-            if d < ndim - 1 {
-                dims.extend(quote! {
-                    #dim_name,
-                });
-            } else {
-                dims.extend(quote! {
-                    #dim_name
-                });
+            if !dims.is_empty() {
+                dims.extend(quote! { , })
             }
+            dims.extend(quote! {
+                #dim_name
+            });
         }
 
         // Build data creator with correct number of flatten() invocations.
@@ -61,7 +58,7 @@ pub fn generate_code(max_ndim: usize) -> syn::Result<String> {
         data_creator.extend(quote! {collect::<Vec<T>>().into()});
 
         // Build array type.
-        let mut array_type = quote! {T};
+        let mut array_type = quote! { T };
         for d in (0..ndim).rev() {
             let dim_name = format_ident!("{DIM}{d}");
             array_type = quote! {

@@ -1,4 +1,4 @@
-use crate::common::{format_token_stream, DIM};
+use crate::common::{format_token_stream, DIM, RANK};
 use quote::{format_ident, quote};
 
 pub fn generate_code(max_ndim: usize) -> String {
@@ -6,7 +6,7 @@ pub fn generate_code(max_ndim: usize) -> String {
     let mut structs_and_traits = quote! {};
     for ndim in 0..=max_ndim {
         let indim = ndim as isize;
-        let struct_name = format_ident!("Rank{}", ndim);
+        let struct_name = format_ident!("{RANK}{ndim}");
 
         // Build dimension generics, dimension names, and size.
         let mut const_dims = quote! {};
@@ -119,7 +119,7 @@ pub fn generate_code(max_ndim: usize) -> String {
     let mut macro_captures = quote! {};
     let mut struct_args = quote! {};
     for ndim in 0..=max_ndim {
-        let struct_name = format_ident!("Rank{}", ndim);
+        let struct_name = format_ident!("{RANK}{ndim}");
         shape_macro.extend(quote! {
             (#macro_captures) => {
                 #struct_name::<#struct_args> {}

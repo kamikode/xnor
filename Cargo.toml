@@ -8,6 +8,7 @@ build = "build.rs"
 
 [build-dependencies]
 xnor-codegen = { path = "./xnor-codegen" }
+walkdir = "2.5.0"
 
 [dependencies]
 num-traits = "0.2.19"

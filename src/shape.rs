@@ -35,12 +35,6 @@ mod tests {
         assert_eq!(1, shape!(0).ndim());
         assert_eq!(2, shape!(0, 1).ndim());
         assert_eq!(3, shape!(0, 1, 2).ndim());
-        assert_eq!(4, shape!(0, 1, 2, 3).ndim());
-        assert_eq!(5, shape!(0, 1, 2, 3, 4).ndim());
-        assert_eq!(6, shape!(0, 1, 2, 3, 4, 5).ndim());
-        assert_eq!(7, shape!(0, 1, 2, 3, 4, 5, 6).ndim());
-        assert_eq!(8, shape!(0, 1, 2, 3, 4, 5, 6, 7).ndim());
-        assert_eq!(9, shape!(0, 1, 2, 3, 4, 5, 6, 7, 8).ndim());
     }
 
     #[test]
@@ -49,12 +43,6 @@ mod tests {
         assert_eq!(2usize.pow(1), shape!(2).size());
         assert_eq!(2usize.pow(2), shape!(2, 2).size());
         assert_eq!(2usize.pow(3), shape!(2, 2, 2).size());
-        assert_eq!(2usize.pow(4), shape!(2, 2, 2, 2).size());
-        assert_eq!(2usize.pow(5), shape!(2, 2, 2, 2, 2).size());
-        assert_eq!(2usize.pow(6), shape!(2, 2, 2, 2, 2, 2).size());
-        assert_eq!(2usize.pow(7), shape!(2, 2, 2, 2, 2, 2, 2).size());
-        assert_eq!(2usize.pow(8), shape!(2, 2, 2, 2, 2, 2, 2, 2).size());
-        assert_eq!(2usize.pow(9), shape!(2, 2, 2, 2, 2, 2, 2, 2, 2).size());
         assert_eq!(0, shape!(0, 2).size());
     }
 

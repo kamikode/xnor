@@ -1,6 +1,4 @@
-use crate::shape::{
-    shape, Rank0, Rank1, Rank2, Rank3, Rank4, Rank5, Rank6, Rank7, Rank8, Rank9, Shape,
-};
+use crate::shape::*;
 use alloc::sync::Arc;
 use alloc::vec::Vec;
 use num_traits::Num;
@@ -120,47 +118,5 @@ mod tests {
         let x = Tensor::from([[[0.3], [1.3], [0.6]], [[3.0], [1.2], [0.5]]]);
         assert_eq!(x.shape, shape!(2, 3, 1));
         assert_eq!(*x.data.deref(), vec![0.3, 1.3, 0.6, 3.0, 1.2, 0.5])
-    }
-
-    #[test]
-    fn from_4d() {
-        let x = Tensor::from([[[[1.0]]]]);
-        assert_eq!(x.shape, shape!(1, 1, 1, 1));
-        assert_eq!(*x.data.deref(), vec![1.0])
-    }
-
-    #[test]
-    fn from_5d() {
-        let x = Tensor::from([[[[[1.0]]]]]);
-        assert_eq!(x.shape, shape!(1, 1, 1, 1, 1));
-        assert_eq!(*x.data.deref(), vec![1.0])
-    }
-
-    #[test]
-    fn from_6d() {
-        let x = Tensor::from([[[[[[1.0]]]]]]);
-        assert_eq!(x.shape, shape!(1, 1, 1, 1, 1, 1));
-        assert_eq!(*x.data.deref(), vec![1.0])
-    }
-
-    #[test]
-    fn from_7d() {
-        let x = Tensor::from([[[[[[[1.0]]]]]]]);
-        assert_eq!(x.shape, shape!(1, 1, 1, 1, 1, 1, 1));
-        assert_eq!(*x.data.deref(), vec![1.0])
-    }
-
-    #[test]
-    fn from_8d() {
-        let x = Tensor::from([[[[[[[[1.0]]]]]]]]);
-        assert_eq!(x.shape, shape!(1, 1, 1, 1, 1, 1, 1, 1));
-        assert_eq!(*x.data.deref(), vec![1.0])
-    }
-
-    #[test]
-    fn from_9d() {
-        let x = Tensor::from([[[[[[[[[1.0]]]]]]]]]);
-        assert_eq!(x.shape, shape!(1, 1, 1, 1, 1, 1, 1, 1, 1));
-        assert_eq!(*x.data.deref(), vec![1.0])
     }
 }

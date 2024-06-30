@@ -1,7 +1,8 @@
-use crate::common::{format_token_stream, DIM};
+use crate::common::{format_token_stream, DIM, RANK};
 use quote::{format_ident, quote};
 
 pub fn generate_code(max_ndim: usize) -> syn::Result<String> {
+    let rank_name = format_ident!("{RANK}0");
     let mut from_implementations = quote! {
         // The primitive type trait is necessary for the type system
         // to be able to infer the type unambiguously.
@@ -20,7 +21,7 @@ pub fn generate_code(max_ndim: usize) -> syn::Result<String> {
         impl PrimitiveType for u64 {}
         impl PrimitiveType for u128 {}
 
-        impl<T: PrimitiveType> From<T> for Tensor<T, Rank0> {
+        impl<T: PrimitiveType> From<T> for Tensor<T, #rank_name> {
             fn from(value: T) -> Self {
                 Self {
                     data: alloc::vec![value; 1].into(),
@@ -31,7 +32,7 @@ pub fn generate_code(max_ndim: usize) -> syn::Result<String> {
     };
 
     for ndim in 1..=max_ndim {
-        let rank_name = format_ident!("Rank{}", ndim);
+        let rank_name = format_ident!("{RANK}{ndim}");
 
         // Build dimension generics and dimension names.
         let mut const_dims = quote! {};

@@ -5,7 +5,7 @@ use xnor::prelude::*;
 fn main() -> Result<(), Box<dyn Error>> {
     let x = Tensor::from([0.0, 1.0]);
     let y = BoolTensor::full(shape!(), false);
-    let z = BoolTensor::full(shape!(1, 2, 3, 4), false);
+    let z = BoolTensor::full(shape!(1, 2, 3), false);
     println!("x ndim={}, size={}, shape={}", x.ndim(), x.size(), x.shape);
     println!("y ndim={}, size={}, shape={}", y.ndim(), y.size(), y.shape);
     println!("z ndim={}, size={}, shape={}", z.ndim(), z.size(), z.shape);

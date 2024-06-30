@@ -114,7 +114,7 @@ pub fn generate_code(max_ndim: usize) -> syn::Result<String> {
         });
     }
 
-    // Generate shape macro for conveniently defining Rank? structs.
+    // Generate shape macro for conveniently defining Rank# structs.
     let mut shape_macro = quote! {};
     let mut macro_captures = quote! {};
     let mut struct_args = quote! {};

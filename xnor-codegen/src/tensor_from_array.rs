@@ -1,14 +1,7 @@
-use proc_macro::TokenStream;
+use crate::common::{format_token_stream, DIM};
 use quote::{format_ident, quote};
-use syn::{parse_macro_input, LitInt};
 
-const DIM: &str = "D";
-
-pub fn generate_tensor_from_array_impl(item: TokenStream) -> TokenStream {
-    // Extract maximum desired rank from macro input.
-    let input = parse_macro_input!(item as LitInt);
-    let max_ndim = input.base10_parse::<usize>().unwrap();
-
+pub fn generate_code(max_ndim: usize) -> String {
     let mut from_implementations = quote! {
         // The primitive type trait is necessary for the type system
         // to be able to infer the type unambiguously.
@@ -88,8 +81,5 @@ pub fn generate_tensor_from_array_impl(item: TokenStream) -> TokenStream {
         });
     }
 
-    quote! {
-        #from_implementations
-    }
-    .into()
+    format_token_stream(from_implementations)
 }

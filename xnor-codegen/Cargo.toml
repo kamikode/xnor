@@ -1,0 +1,10 @@
+[package]
+name = "xnor-codegen"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+proc-macro2 = "1.0.84"
+quote = "1.0.36"
+syn = "2.0.66"
+prettyplease = "0.2.20"

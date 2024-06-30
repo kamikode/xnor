@@ -1,14 +1,7 @@
-use proc_macro::TokenStream;
+use crate::common::{format_token_stream, DIM};
 use quote::{format_ident, quote};
-use syn::{parse_macro_input, LitInt};
 
-const DIM: &str = "D";
-
-pub fn generate_rank_structs_impl(item: TokenStream) -> TokenStream {
-    // Extract maximum desired rank from macro input.
-    let input = parse_macro_input!(item as LitInt);
-    let max_ndim = input.base10_parse::<usize>().unwrap();
-
+pub fn generate_code(max_ndim: usize) -> String {
     // Generate struct and trait definitions.
     let mut structs_and_traits = quote! {};
     for ndim in 0..=max_ndim {
@@ -27,11 +20,16 @@ pub fn generate_rank_structs_impl(item: TokenStream) -> TokenStream {
             dims.extend(quote! {
                 #dim_name,
             });
+            if !size.is_empty() {
+                size.extend(quote! {*});
+            }
             size.extend(quote! {
-                #dim_name *
+                #dim_name
             })
         }
-        size.extend(quote! {1});
+        if size.is_empty() {
+            size = quote! {1};
+        }
 
         // Rank# struct and Shape trait implementation.
         structs_and_traits.extend(quote! {
@@ -44,7 +42,7 @@ pub fn generate_rank_structs_impl(item: TokenStream) -> TokenStream {
         });
 
         // HasAxis, AxisAtIndexHasSize, and Index traits implementation.
-        let mut match_block = quote! {};
+        let mut index_body = quote! {};
         let mut current_stride = quote! { 1 };
         for d in (0..indim).rev() {
             let dim_name = format_ident!("{DIM}{d}");
@@ -59,25 +57,37 @@ pub fn generate_rank_structs_impl(item: TokenStream) -> TokenStream {
                 impl<#const_dims> AxisAtIndexHasSize<#d, #dim_name> for #struct_name<#dims> {}
                 impl<#const_dims> AxisAtIndexHasSize<#neg_d, #dim_name> for #struct_name<#dims> {}
             });
-            match_block.extend(quote! {
+            index_body.extend(quote! {
                 #d => { &#dim_name },
                 #neg_d => { &#dim_name },
             });
-            current_stride = quote! { #current_stride * #dim_name };
-        }
-        match_block.extend(quote! {
-            _ => {
-                panic!("index out of bounds: the len is {} but the index is {}",
-                        #ndim, index);
+            if d == indim - 1 {
+                current_stride = quote! { #dim_name };
+            } else {
+                current_stride.extend(quote! {* #dim_name});
             }
-        });
+        }
+        let panic_out_of_bounds = quote! {
+            panic!("index out of bounds: the len is {} but the index is {}", #ndim, index);
+        };
+        if index_body.is_empty() {
+            index_body = panic_out_of_bounds;
+        } else {
+            index_body = quote! {
+                match index {
+                    #index_body
+                    _ => {
+                        #panic_out_of_bounds
+                    }
+                }
+            }
+        }
+
         structs_and_traits.extend(quote! {
             impl<#const_dims> Index<isize> for #struct_name<#dims> {
                 type Output = usize;
                 fn index(&self, index: isize) -> &Self::Output {
-                    match index {
-                        #match_block
-                    }
+                    #index_body
                 }
             }
         });
@@ -104,9 +114,35 @@ pub fn generate_rank_structs_impl(item: TokenStream) -> TokenStream {
         });
     }
 
-    // Return the final implementation.
-    quote! {
-        #structs_and_traits
+    // Generate shape macro for conveniently defining Rank? structs.
+    let mut shape_macro = quote! {};
+    let mut macro_captures = quote! {};
+    let mut struct_args = quote! {};
+    for ndim in 0..=max_ndim {
+        let struct_name = format_ident!("Rank{}", ndim);
+        shape_macro.extend(quote! {
+            (#macro_captures) => {
+                #struct_name::<#struct_args> {}
+            };
+        });
+        if !macro_captures.is_empty() {
+            macro_captures.extend(quote! { , });
+        }
+        if !struct_args.is_empty() {
+            struct_args.extend(quote! { , });
+        }
+        let dim_ident = format_ident!("d{}", ndim);
+        macro_captures.extend(quote! { $#dim_ident:expr });
+        struct_args.extend(quote! { $#dim_ident });
     }
-    .into()
+    shape_macro = quote! {
+        #[macro_export]
+        macro_rules! shape {
+            #shape_macro
+        }
+    };
+    format_token_stream(quote! {
+        #structs_and_traits
+        #shape_macro
+    })
 }

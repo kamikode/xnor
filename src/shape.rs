@@ -1,7 +1,5 @@
-extern crate xnor_macros;
 use core::fmt::Display;
 use core::ops::Index;
-use xnor_macros::generate_rank_structs;
 
 pub trait Shape {
     const NDIM: usize;
@@ -22,42 +20,9 @@ pub trait HasAxis<const INDEX: isize>: Shape {
 }
 pub trait AxisAtIndexHasSize<const INDEX: isize, const SIZE: usize>: HasAxis<INDEX> {}
 
-// Generates types from Rank0 to Rank9 implementing the shape traits.
-generate_rank_structs!(9);
-
-#[macro_export]
-macro_rules! shape {
-    () => {
-        Rank0 {}
-    };
-    ($d0:expr) => {
-        Rank1::<$d0> {}
-    };
-    ($d0:expr, $d1:expr) => {
-        Rank2::<$d0, $d1> {}
-    };
-    ($d0:expr, $d1:expr, $d2:expr) => {
-        Rank3::<$d0, $d1, $d2> {}
-    };
-    ($d0:expr, $d1:expr, $d2:expr, $d3:expr) => {
-        Rank4::<$d0, $d1, $d2, $d3> {}
-    };
-    ($d0:expr, $d1:expr, $d2:expr, $d3:expr, $d4:expr) => {
-        Rank5::<$d0, $d1, $d2, $d3, $d4> {}
-    };
-    ($d0:expr, $d1:expr, $d2:expr, $d3:expr, $d4:expr, $d5:expr) => {
-        Rank6::<$d0, $d1, $d2, $d3, $d4, $d5> {}
-    };
-    ($d0:expr, $d1:expr, $d2:expr, $d3:expr, $d4:expr, $d5:expr, $d6:expr) => {
-        Rank7::<$d0, $d1, $d2, $d3, $d4, $d5, $d6> {}
-    };
-    ($d0:expr, $d1:expr, $d2:expr, $d3:expr, $d4:expr, $d5:expr, $d6:expr,  $d7:expr) => {
-        Rank8::<$d0, $d1, $d2, $d3, $d4, $d5, $d6, $d7> {}
-    };
-    ($d0:expr, $d1:expr, $d2:expr, $d3:expr, $d4:expr, $d5:expr, $d6:expr,  $d7:expr, $d8:expr) => {
-        Rank9::<$d0, $d1, $d2, $d3, $d4, $d5, $d6, $d7, $d8> {}
-    };
-}
+// Rank structures that implement shape traits.
+include!(concat!(env!("OUT_DIR"), "/ranks.rs"));
+pub use shape; // Shape macro (for defining Rank structures).
 
 #[cfg(test)]
 mod tests {

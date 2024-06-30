@@ -1,9 +1,9 @@
-use crate::shape;
-use crate::shapes::{Rank0, Rank1, Rank2, Rank3, Rank4, Rank5, Rank6, Rank7, Rank8, Rank9, Shape};
+use crate::shape::{
+    shape, Rank0, Rank1, Rank2, Rank3, Rank4, Rank5, Rank6, Rank7, Rank8, Rank9, Shape,
+};
 use alloc::sync::Arc;
 use alloc::vec::Vec;
 use num_traits::Num;
-use xnor_macros::generate_tensor_from_array;
 
 #[allow(dead_code)] // TEMPORARY.
 #[derive(Debug)]
@@ -64,8 +64,8 @@ pub type U32Tensor<S> = Tensor<u32, S>;
 pub type U64Tensor<S> = Tensor<u64, S>;
 pub type U128Tensor<S> = Tensor<u128, S>;
 
-// Generates "From" trait implementations for converting arrays to tensors.
-generate_tensor_from_array!(9);
+// "From" trait implementations for converting arrays to tensors
+include!(concat!(env!("OUT_DIR"), "/tensor_from_array.rs"));
 
 #[cfg(test)]
 mod tests {

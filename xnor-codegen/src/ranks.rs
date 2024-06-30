@@ -4,49 +4,37 @@ use quote::{format_ident, quote};
 pub fn generate_code(max_ndim: usize) -> syn::Result<String> {
     // Generate struct and trait definitions.
     let mut structs_and_traits = quote! {};
+    let mut const_dims = quote! {};
+    let mut dims = quote! {};
+    let mut size = quote! {};
     for ndim in 0..=max_ndim {
-        let indim = ndim as isize;
         let struct_name = format_ident!("{RANK}{ndim}");
 
-        // Build dimension generics, dimension names, and size.
-        let mut const_dims = quote! {};
-        let mut dims = quote! {};
-        let mut size = quote! {};
-        for d in 0..ndim {
-            let dim_name = format_ident!("{DIM}{d}");
-            const_dims.extend(quote! {
-                const #dim_name: usize,
-            });
-            dims.extend(quote! {
-                #dim_name,
-            });
-            if !size.is_empty() {
-                size.extend(quote! {*});
-            }
-            size.extend(quote! {
-                #dim_name
-            })
-        }
-        if size.is_empty() {
-            size = quote! {1};
-        }
-
         // Rank# struct and Shape trait implementation.
+        let mut current_size = quote! { #size };
+        if current_size.is_empty() {
+            current_size = quote! { 1 };
+        }
         structs_and_traits.extend(quote! {
             #[derive(Debug, PartialEq)]
             pub struct #struct_name<#const_dims> {}
             impl<#const_dims> Shape for #struct_name<#dims> {
                 const NDIM: usize = #ndim;
-                const SIZE: usize = #size;
+                const SIZE: usize = #current_size;
             }
         });
 
         // HasAxis, AxisAtIndexHasSize, and Index traits implementation.
+        let indim = ndim as isize;
         let mut index_body = quote! {};
-        let mut current_stride = quote! { 1 };
+        let mut stride = quote! {};
         for d in (0..indim).rev() {
             let dim_name = format_ident!("{DIM}{d}");
             let neg_d = -indim + d;
+            let mut current_stride = quote! { #stride };
+            if current_stride.is_empty() {
+                current_stride = quote! { 1 };
+            }
             structs_and_traits.extend(quote! {
                 impl<#const_dims> HasAxis<#d> for #struct_name<#dims> {
                     const STRIDE: usize = #current_stride;
@@ -61,12 +49,12 @@ pub fn generate_code(max_ndim: usize) -> syn::Result<String> {
                 #d => { &#dim_name },
                 #neg_d => { &#dim_name },
             });
-            if d == indim - 1 {
-                current_stride = quote! { #dim_name };
-            } else {
-                current_stride.extend(quote! {* #dim_name});
+            if !stride.is_empty() {
+                stride.extend(quote! { * });
             }
+            stride.extend(quote! { #dim_name });
         }
+
         let panic_out_of_bounds = quote! {
             panic!("index out of bounds: the len is {} but the index is {}", #ndim, index);
         };
@@ -112,6 +100,15 @@ pub fn generate_code(max_ndim: usize) -> syn::Result<String> {
                 }
             }
         });
+
+        // Append current dimension.
+        let dim_name = format_ident!("{DIM}{ndim}");
+        const_dims.extend(quote! { const #dim_name: usize, });
+        dims.extend(quote! { #dim_name, });
+        if !size.is_empty() {
+            size.extend(quote! { * });
+        }
+        size.extend(quote! { #dim_name });
     }
 
     // Generate shape macro for conveniently defining Rank# structs.

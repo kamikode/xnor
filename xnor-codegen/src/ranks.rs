@@ -1,7 +1,7 @@
 use crate::common::{format_token_stream, DIM, RANK};
 use quote::{format_ident, quote};
 
-pub fn generate_code(max_ndim: usize) -> String {
+pub fn generate_code(max_ndim: usize) -> syn::Result<String> {
     // Generate struct and trait definitions.
     let mut structs_and_traits = quote! {};
     for ndim in 0..=max_ndim {

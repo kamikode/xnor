@@ -1,7 +1,7 @@
 use crate::common::{format_token_stream, DIM};
 use quote::{format_ident, quote};
 
-pub fn generate_code(max_ndim: usize) -> String {
+pub fn generate_code(max_ndim: usize) -> syn::Result<String> {
     let mut from_implementations = quote! {
         // The primitive type trait is necessary for the type system
         // to be able to infer the type unambiguously.

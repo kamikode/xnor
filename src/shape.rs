@@ -22,7 +22,7 @@ pub trait AxisAtIndexHasSize<const INDEX: isize, const SIZE: usize>: HasAxis<IND
 
 // Rank structures that implement shape traits.
 include!(concat!(env!("OUT_DIR"), "/ranks.rs"));
-pub use shape; // Shape macro (for defining Rank structures).
+pub use shape; // shape! macro (for defining Rank structures).
 
 #[cfg(test)]
 mod tests {

@@ -18,6 +18,7 @@ pub trait Shape {
 pub trait HasAxis<const INDEX: isize>: Shape {
     const STRIDE: usize;
 }
+// Not sure this is actually useful.
 pub trait AxisAtIndexHasSize<const INDEX: isize, const SIZE: usize>: HasAxis<INDEX> {}
 
 // Rank structures that implement shape traits.

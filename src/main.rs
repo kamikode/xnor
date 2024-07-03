@@ -2,7 +2,8 @@ use std::error::Error;
 use xnor::prelude::*;
 
 #[allow(unused_variables)] // TEMPORARY.
-fn main() -> Result<(), Box<dyn Error>> {
+fn 
+main() -> Result<(), Box<dyn Error>> {
     let x = Tensor::from([0.0, 1.0]);
     let y = BoolTensor::full(shape!(), false);
     let z = BoolTensor::full(shape!(1, 2, 3), false);

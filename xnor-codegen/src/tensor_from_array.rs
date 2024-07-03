@@ -21,10 +21,21 @@ pub fn generate_code(max_ndim: usize) -> syn::Result<String> {
         impl PrimitiveType for u64 {}
         impl PrimitiveType for u128 {}
 
+        // Implementation for value.
         impl<T: PrimitiveType> From<T> for Tensor<T, #rank_name> {
-            fn from(value: T) -> Self {
+            fn from(x: T) -> Self {
                 Self {
-                    data: alloc::vec![value; 1].into(),
+                    data: alloc::vec![x; 1].into(),
+                    shape: shape!(),
+                }
+            }
+        }
+
+        // Implementation for reference.
+        impl<T: PrimitiveType> From<&T> for Tensor<T, #rank_name> {
+            fn from(x: &T) -> Self {
+                Self {
+                    data: alloc::vec![*x; 1].into(),
                     shape: shape!(),
                 }
             }
@@ -51,7 +62,7 @@ pub fn generate_code(max_ndim: usize) -> syn::Result<String> {
         }
 
         // Build data creator with correct number of flatten() invocations.
-        let mut data_creator = quote! {value.iter().copied().};
+        let mut data_creator = quote! { x.iter().copied(). };
         for _ in 1..ndim {
             data_creator.extend(quote! {flatten().});
         }
@@ -68,8 +79,19 @@ pub fn generate_code(max_ndim: usize) -> syn::Result<String> {
 
         // Generate "From" trait implementation.
         from_implementations.extend(quote! {
+            // Implementation for values.
             impl<T: PrimitiveType, #const_dims> From<#array_type> for Tensor<T, #rank_name<#dims>> {
-                fn from(value: #array_type) -> Self {
+                fn from(x: #array_type) -> Self {
+                    Self {
+                        data: #data_creator,
+                        shape: shape!(#dims),
+                    }
+                }
+            }
+
+            // Implementation for references.
+            impl<T: PrimitiveType, #const_dims> From<&#array_type> for Tensor<T, #rank_name<#dims>> {
+                fn from(x: &#array_type) -> Self {
                     Self {
                         data: #data_creator,
                         shape: shape!(#dims),

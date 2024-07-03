@@ -93,30 +93,58 @@ mod tests {
     }
 
     #[test]
-    fn from_0d() {
+    fn from_0d_value() {
         let x = Tensor::from(3.2);
         assert_eq!(x.shape, shape!());
-        assert_eq!(*x.data.deref(), vec![3.2; 1])
+        assert_eq!(*x.data.deref(), vec![3.2; 1]);
     }
 
     #[test]
-    fn from_1d() {
+    fn from_0d_refernce() {
+        let x = Tensor::from(&3.2);
+        assert_eq!(x.shape, shape!());
+        assert_eq!(*x.data.deref(), vec![3.2; 1]);
+    }
+
+    #[test]
+    fn from_1d_value() {
         let x = Tensor::from([0.3, 1.4]);
         assert_eq!(x.shape, shape!(2));
-        assert_eq!(*x.data.deref(), vec![0.3, 1.4])
+        assert_eq!(*x.data.deref(), vec![0.3, 1.4]);
     }
 
     #[test]
-    fn from_2d() {
+    fn from_1d_reference() {
+        let x = Tensor::from(&[0.3, 1.4]);
+        assert_eq!(x.shape, shape!(2));
+        assert_eq!(*x.data.deref(), vec![0.3, 1.4]);
+    }
+
+    #[test]
+    fn from_2d_value() {
         let x = Tensor::from([[0.3, 1.3, 0.6], [3.0, 1.2, 0.5]]);
         assert_eq!(x.shape, shape!(2, 3));
-        assert_eq!(*x.data.deref(), vec![0.3, 1.3, 0.6, 3.0, 1.2, 0.5])
+        assert_eq!(*x.data.deref(), vec![0.3, 1.3, 0.6, 3.0, 1.2, 0.5]);
     }
 
     #[test]
-    fn from_3d() {
+    fn from_2d_reference() {
+        let x = Tensor::from(&[[0.3, 1.3, 0.6], [3.0, 1.2, 0.5]]);
+        assert_eq!(x.shape, shape!(2, 3));
+        assert_eq!(*x.data.deref(), vec![0.3, 1.3, 0.6, 3.0, 1.2, 0.5]);
+    }
+
+    #[test]
+    fn from_3d_value() {
         let x = Tensor::from([[[0.3], [1.3], [0.6]], [[3.0], [1.2], [0.5]]]);
         assert_eq!(x.shape, shape!(2, 3, 1));
-        assert_eq!(*x.data.deref(), vec![0.3, 1.3, 0.6, 3.0, 1.2, 0.5])
+        assert_eq!(*x.data.deref(), vec![0.3, 1.3, 0.6, 3.0, 1.2, 0.5]);
+    }
+
+    #[test]
+    fn from_3d_reference() {
+        let x = Tensor::from(&[[[0.3], [1.3], [0.6]], [[3.0], [1.2], [0.5]]]);
+        assert_eq!(x.shape, shape!(2, 3, 1));
+        assert_eq!(*x.data.deref(), vec![0.3, 1.3, 0.6, 3.0, 1.2, 0.5]);
     }
 }
